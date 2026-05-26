@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalonApp — Salon de Coiffure Masculin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --or: #C9A84C;
+    --or-clair: #E8C97A;
+    --or-sombre: #8B6914;
+    --noir: #0A0A0A;
+    --noir-2: #111111;
+    --noir-3: #1A1A1A;
+    --noir-4: #242424;
+    --gris: #2E2E2E;
+    --gris-clair: #888;
+    --blanc: #F5F0E8;
+    --blanc-pur: #FFFFFF;
+    --rouge: #C0392B;
+    --vert: #27AE60;
+    --bleu: #2980B9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--noir);
+    color: var(--blanc);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* PHONE SHELL */
+  .app-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    background: radial-gradient(ellipse at 30% 20%, #1a1200 0%, var(--noir) 60%);
+  }
+
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--noir-2);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(201,168,76,0.2),
+      0 40px 120px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(201,168,76,0.1);
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    width: 100%;
+    min-height: 844px;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blanc);
+    flex-shrink: 0;
+  }
+
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 16px;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blanc);
+  }
+
+  .header-title span { color: var(--or); }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    color: var(--or);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .back-btn:hover { background: rgba(201,168,76,0.2); }
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.3);
+    color: #E74C3C;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .logout-btn:hover { background: rgba(192,57,43,0.22); }
+
+  /* SCROLL CONTENT */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px 100px;
+    scrollbar-width: none;
+  }
+
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* SPLASH */
+  #splash {
+    background: var(--noir);
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+  }
+
+  .splash-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 200px at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%);
+  }
+
+  .splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 1;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .splash-icon {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, var(--or-sombre), var(--or));
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    margin-bottom: 8px;
+    box-shadow: 0 20px 60px rgba(201,168,76,0.25);
+  }
+
+  .splash-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--blanc);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .splash-logo span { color: var(--or); }
+
+  .splash-tagline {
+    font-size: 14px;
+    color: var(--gris-clair);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .splash-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--or), transparent);
+    margin: 16px 0;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .role-card {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 20px;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .role-card:hover, .role-card:active {
+    background: var(--noir-4);
+    border-color: var(--or);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.15);
+  }
+
+  .role-card .emoji { font-size: 28px; margin-bottom: 8px; }
+
+  .role-card .role-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blanc);
+    margin-bottom: 4px;
+  }
+
+  .role-card .role-desc {
+    font-size: 11px;
+    color: var(--gris-clair);
+  }
+
+  /* LOGIN */
+  .login-hero {
+    background: linear-gradient(180deg, rgba(201,168,76,0.06) 0%, transparent 100%);
+    padding: 24px 20px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+
+  .login-avatar {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--or-sombre), var(--or));
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 12px;
+  }
+
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--blanc);
+  }
+
+  .login-sub { font-size: 13px; color: var(--gris-clair); margin-top: 4px; }
+
+  .form-section { padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--or);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .form-input {
+    background: var(--noir-3);
+    border: 1px solid var(--gris);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--or); }
+  .form-input::placeholder { color: var(--gris-clair); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--or-sombre), var(--or));
+    color: var(--noir);
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--or);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 16px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { background: rgba(201,168,76,0.08); }
+
+  /* CARDS */
+  .card {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blanc);
+  }
+
+  .card-sub { font-size: 12px; color: var(--gris-clair); margin-top: 2px; }
+
+  /* BADGES */
+  .badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .badge-or { background: rgba(201,168,76,0.15); color: var(--or); }
+  .badge-vert { background: rgba(39,174,96,0.15); color: #2ECC71; }
+  .badge-rouge { background: rgba(192,57,43,0.15); color: #E74C3C; }
+  .badge-bleu { background: rgba(41,128,185,0.15); color: #5DADE2; }
+  .badge-gris { background: rgba(100,100,100,0.2); color: var(--gris-clair); }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 16px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--or);
+  }
+
+  .stat-label { font-size: 11px; color: var(--gris-clair); margin-top: 2px; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blanc);
+    margin: 20px 0 12px;
+  }
+
+  .section-title span { color: var(--or); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(201,168,76,0.12);
+    display: flex;
+    padding: 8px 0 20px;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-item .nav-icon { font-size: 22px; }
+  .nav-item .nav-label { font-size: 10px; color: var(--gris-clair); font-weight: 500; }
+  .nav-item.active .nav-label { color: var(--or); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px rgba(201,168,76,0.5)); }
+
+  /* TIME SLOTS */
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  .time-slot {
+    background: var(--noir-3);
+    border: 1px solid var(--gris);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .time-slot:hover, .time-slot.selected {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--or);
+    color: var(--or);
+  }
+
+  .time-slot.taken {
+    opacity: 0.35;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+
+  /* SERVICE CARDS */
+  .service-card {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .service-card:hover { border-color: rgba(201,168,76,0.4); background: var(--noir-4); }
+
+  .service-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .service-info { flex: 1; }
+  .service-name { font-size: 14px; font-weight: 600; color: var(--blanc); }
+  .service-duration { font-size: 12px; color: var(--gris-clair); margin-top: 2px; }
+  .service-price { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--or); }
+
+  /* COIFFEUR CARD */
+  .coiffeur-card {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .coiffeur-card:hover { border-color: rgba(201,168,76,0.35); }
+
+  .coiffeur-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--or-sombre), var(--or));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .coiffeur-info { flex: 1; }
+  .coiffeur-name { font-size: 15px; font-weight: 600; color: var(--blanc); }
+  .coiffeur-spec { font-size: 12px; color: var(--gris-clair); margin-top: 2px; }
+
+  .stars { color: var(--or); font-size: 12px; margin-top: 3px; }
+
+  /* PLANNING */
+  .rdv-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.08);
+    border-radius: 16px;
+    margin-bottom: 8px;
+  }
+
+  .rdv-time {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+    min-width: 52px;
+  }
+
+  .rdv-heure { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--or); }
+  .rdv-am { font-size: 10px; color: var(--gris-clair); }
+
+  .rdv-info { flex: 1; }
+  .rdv-client { font-size: 14px; font-weight: 600; color: var(--blanc); }
+  .rdv-service { font-size: 12px; color: var(--gris-clair); margin-top: 2px; }
+
+  /* CAISSE */
+  .caisse-total {
+    background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 22px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .caisse-label { font-size: 12px; color: var(--gris-clair); letter-spacing: 2px; text-transform: uppercase; }
+
+  .caisse-montant {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 900;
+    color: var(--or);
+    margin: 8px 0 4px;
+  }
+
+  .caisse-date { font-size: 12px; color: var(--gris-clair); }
+
+  /* TRANSACTION */
+  .transaction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.06);
+    border-radius: 14px;
+    margin-bottom: 8px;
+  }
+
+  .tx-left { display: flex; align-items: center; gap: 12px; }
+  .tx-icon { font-size: 24px; }
+  .tx-desc { font-size: 14px; font-weight: 500; color: var(--blanc); }
+  .tx-time { font-size: 11px; color: var(--gris-clair); margin-top: 2px; }
+  .tx-amount { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: #2ECC71; }
+
+  /* ADMIN TABLE */
+  .admin-table {
+    background: var(--noir-3);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 12px 16px;
+    background: rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+
+  .th { font-size: 11px; font-weight: 600; color: var(--or); letter-spacing: 1px; text-transform: uppercase; }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    align-items: center;
+  }
+
+  .table-row:last-child { border-bottom: none; }
+  .td { font-size: 13px; color: var(--blanc); }
+  .td-sub { font-size: 11px; color: var(--gris-clair); margin-top: 2px; }
+
+  /* WELCOME BANNER */
+  .welcome-banner {
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::before {
+    content: '✂️';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 48px;
+    opacity: 0.15;
+  }
+
+  .welcome-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blanc);
+  }
+
+  .welcome-name span { color: var(--or); }
+  .welcome-sub { font-size: 13px; color: var(--gris-clair); margin-top: 4px; }
+
+  /* INPUT SELECT */
+  .form-select {
+    background: var(--noir-3);
+    border: 1px solid var(--gris);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  /* NOTIFICATION DOT */
+  .notif-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--or);
+    border-radius: 50%;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 4px;
+    background: var(--noir-4);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--or-sombre), var(--or));
+    border-radius: 2px;
+  }
+
+  /* FLOATING ACTION */
+  .fab {
+    position: fixed;
+    bottom: 90px;
+    right: calc(50% - 175px);
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--or-sombre), var(--or));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(201,168,76,0.35);
+    transition: all 0.2s;
+    z-index: 100;
+    border: none;
+  }
+
+  .fab:hover { transform: scale(1.05); }
+
+  /* DEMO LABEL */
+  .demo-label {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gris-clair);
+    padding: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .alert-or { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--or-clair); }
+  .alert-vert { background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.2); color: #2ECC71; }
+
+  /* SWITCH */
+  .switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .switch-label { font-size: 14px; color: var(--blanc); }
+  .switch-sub { font-size: 12px; color: var(--gris-clair); }
+
+  .toggle {
+    width: 44px;
+    height: 26px;
+    background: var(--gris);
+    border-radius: 13px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle.on { background: var(--or); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: left 0.2s;
+  }
+
+  .toggle.on::after { left: 21px; }
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+<div class="phone">
+
+<!-- ═══════════════════════════════════
+     SPLASH / ACCUEIL
+═══════════════════════════════════ -->
+<div class="screen active" id="splash">
+  <div class="splash-bg"></div>
+  <div class="splash-content">
+    <div class="splash-icon">✂️</div>
+    <div class="splash-logo">Salon<span>App</span></div>
+    <div class="splash-tagline">Salon de Coiffure Masculin</div>
+    <div class="splash-divider"></div>
+    <p style="font-size:13px;color:var(--gris-clair);margin-bottom:20px;">Choisissez votre rôle pour continuer</p>
+    <div class="role-grid">
+      <div class="role-card" onclick="show('login-client')">
+        <div class="emoji">👤</div>
+        <div class="role-name">Client</div>
+        <div class="role-desc">Réservez votre coupe</div>
+      </div>
+      <div class="role-card" onclick="show('login-coiffeur')">
+        <div class="emoji">✂️</div>
+        <div class="role-name">Coiffeur</div>
+        <div class="role-desc">Mon planning</div>
+      </div>
+      <div class="role-card" onclick="show('login-gerant')">
+        <div class="emoji">🧾</div>
+        <div class="role-name">Gérant</div>
+        <div class="role-desc">Gérer le salon</div>
+      </div>
+      <div class="role-card" onclick="show('login-admin')">
+        <div class="emoji">🔐</div>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Administration</div>
+      </div>
+    </div>
+    <div class="demo-label">PROTOTYPE — Non Joseph Junior · 2025</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LOGIN CLIENT
+═══════════════════════════════════ -->
+<div class="screen" id="login-client">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('splash')">← Retour</button>
+    <div class="header-title">Salon<span>App</span></div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="login-hero">
+    <div class="login-avatar">👤</div>
+    <div class="login-title">Espace Client</div>
+    <div class="login-sub">Réservez votre prochaine visite</div>
+  </div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Téléphone</div>
+      <input class="form-input" placeholder="+237 6XX XXX XXX" type="tel">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <button class="btn-primary" onclick="show('home-client')">Se connecter</button>
+    <button class="btn-secondary" onclick="show('register-client')">Créer un compte</button>
+    <div class="demo-label">Démo : client@salonapp.com / password</div>
+  </div>
+</div>
+
+<!-- INSCRIPTION CLIENT -->
+<div class="screen" id="register-client">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('login-client')">← Retour</button>
+    <div class="header-title">Inscription</div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="scroll-content" style="padding-top:16px;">
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">Nom complet</div>
+      <input class="form-input" placeholder="Ex : Konan Fabrice">
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">Téléphone</div>
+      <input class="form-input" placeholder="+237 6XX XXX XXX">
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">Email (optionnel)</div>
+      <input class="form-input" placeholder="email@exemple.com" type="email">
+    </div>
+    <div class="form-group" style="margin-bottom:14px;">
+      <div class="form-label">Mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <div class="form-label">Confirmer le mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <button class="btn-primary" onclick="show('home-client')">Créer mon compte</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     HOME CLIENT
+═══════════════════════════════════ -->
+<div class="screen" id="home-client">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <div style="width:80px"></div>
+    <div class="header-title">Salon<span>App</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="welcome-banner">
+      <div class="welcome-name">Bonjour, <span>Fabrice</span> 👋</div>
+      <div class="welcome-sub">Prêt pour une nouvelle coupe ?</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">8</div>
+        <div class="stat-label">Visites</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">1</div>
+        <div class="stat-label">RDV à venir</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">⭐ 5</div>
+        <div class="stat-label">Mon avis</div>
+      </div>
+    </div>
+
+    <div class="section-title">Prochain <span>rendez-vous</span></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Coupe + Barbe</div>
+          <div class="card-sub">Demain — 10h00 · Coiffeur Armel</div>
+        </div>
+        <span class="badge badge-or">Confirmé</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
+      <div style="font-size:11px;color:var(--gris-clair);margin-top:6px;">Dans 14 heures</div>
+    </div>
+
+    <div class="section-title">Nos <span>Services</span></div>
+    <div class="service-card" onclick="show('reservation')">
+      <div class="service-icon">💈</div>
+      <div class="service-info">
+        <div class="service-name">Coupe Simple</div>
+        <div class="service-duration">⏱ 30 min</div>
+      </div>
+      <div class="service-price">2 000 F</div>
+    </div>
+    <div class="service-card" onclick="show('reservation')">
+      <div class="service-icon">🪒</div>
+      <div class="service-info">
+        <div class="service-name">Coupe + Barbe</div>
+        <div class="service-duration">⏱ 45 min</div>
+      </div>
+      <div class="service-price">3 500 F</div>
+    </div>
+    <div class="service-card" onclick="show('reservation')">
+      <div class="service-icon">👑</div>
+      <div class="service-info">
+        <div class="service-name">Pack Premium</div>
+        <div class="service-duration">⏱ 60 min</div>
+      </div>
+      <div class="service-price">5 000 F</div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="show('home-client')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Accueil</div>
+    </div>
+    <div class="nav-item" onclick="show('reservation')">
+      <div class="nav-icon">📅</div>
+      <div class="nav-label">Réserver</div>
+    </div>
+    <div class="nav-item" onclick="show('historique-client')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">Historique</div>
+    </div>
+    <div class="nav-item" onclick="show('profil-client')">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Profil</div>
+    </div>
+  </div>
+</div>
+
+<!-- RÉSERVATION -->
+<div class="screen" id="reservation">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-client')">← Retour</button>
+    <div class="header-title">Réserver</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="section-title" style="margin-top:4px;">Choisir un <span>coiffeur</span></div>
+    <div class="coiffeur-card">
+      <div class="coiffeur-avatar">✂️</div>
+      <div class="coiffeur-info">
+        <div class="coiffeur-name">Armel K.</div>
+        <div class="coiffeur-spec">Dégradé · Afro · Barbe</div>
+        <div class="stars">★★★★★ (42)</div>
+      </div>
+      <span class="badge badge-vert">Dispo</span>
+    </div>
+    <div class="coiffeur-card">
+      <div class="coiffeur-avatar">✂️</div>
+      <div class="coiffeur-info">
+        <div class="coiffeur-name">Brice M.</div>
+        <div class="coiffeur-spec">Twists · Dreadlocks</div>
+        <div class="stars">★★★★☆ (28)</div>
+      </div>
+      <span class="badge badge-vert">Dispo</span>
+    </div>
+
+    <div class="section-title">Choisir une <span>date</span></div>
+    <select class="form-select" style="width:100%;margin-bottom:16px;">
+      <option>Aujourd'hui — Mardi 27 Mai</option>
+      <option>Mercredi 28 Mai</option>
+      <option>Jeudi 29 Mai</option>
+      <option>Vendredi 30 Mai</option>
+    </select>
+
+    <div class="section-title">Choisir un <span>créneau</span></div>
+    <div class="time-grid">
+      <div class="time-slot taken">08:00</div>
+      <div class="time-slot taken">08:30</div>
+      <div class="time-slot">09:00</div>
+      <div class="time-slot selected">09:30</div>
+      <div class="time-slot">10:00</div>
+      <div class="time-slot">10:30</div>
+      <div class="time-slot taken">11:00</div>
+      <div class="time-slot">11:30</div>
+      <div class="time-slot">14:00</div>
+    </div>
+
+    <div class="alert alert-or" style="margin-top:8px;">
+      <span>ℹ️</span>
+      <span>Créneau 09:30 sélectionné avec Armel K. — Coupe + Barbe</span>
+    </div>
+
+    <button class="btn-primary" style="margin-top:8px;" onclick="show('confirmation')">Confirmer la réservation</button>
+  </div>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="screen" id="confirmation">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('reservation')">← Retour</button>
+    <div class="header-title">Confirmation</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content" style="padding-top:40px;text-align:center;">
+    <div style="font-size:72px;margin-bottom:16px;">✅</div>
+    <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--blanc);margin-bottom:8px;">Réservation confirmée !</div>
+    <div style="font-size:14px;color:var(--gris-clair);margin-bottom:32px;">Votre rendez-vous a été enregistré</div>
+
+    <div class="card" style="text-align:left;">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gris-clair);font-size:13px;">Service</span><span style="font-size:13px;font-weight:600;">Coupe + Barbe</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gris-clair);font-size:13px;">Coiffeur</span><span style="font-size:13px;font-weight:600;">Armel K.</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gris-clair);font-size:13px;">Date</span><span style="font-size:13px;font-weight:600;">Mardi 27 Mai</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gris-clair);font-size:13px;">Heure</span><span style="font-size:13px;font-weight:600;">09h30</span></div>
+        <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(201,168,76,0.15);padding-top:12px;"><span style="color:var(--gris-clair);font-size:13px;">Prix</span><span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--or);">3 500 FCFA</span></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="margin-top:24px;" onclick="show('home-client')">Retour à l'accueil</button>
+  </div>
+</div>
+
+<!-- HISTORIQUE CLIENT -->
+<div class="screen" id="historique-client">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-client')">← Retour</button>
+    <div class="header-title">Historique</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="section-title" style="margin-top:4px;">Mes <span>visites</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">10h</div><div class="rdv-am">24 Mai</div></div><div class="rdv-info"><div class="rdv-client">Coupe Simple</div><div class="rdv-service">Armel K. · 2 000 FCFA</div></div><span class="badge badge-vert">Terminé</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">14h</div><div class="rdv-am">18 Mai</div></div><div class="rdv-info"><div class="rdv-client">Coupe + Barbe</div><div class="rdv-service">Brice M. · 3 500 FCFA</div></div><span class="badge badge-vert">Terminé</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">09h</div><div class="rdv-am">10 Mai</div></div><div class="rdv-info"><div class="rdv-client">Pack Premium</div><div class="rdv-service">Armel K. · 5 000 FCFA</div></div><span class="badge badge-vert">Terminé</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">11h</div><div class="rdv-am">02 Mai</div></div><div class="rdv-info"><div class="rdv-client">Coupe Simple</div><div class="rdv-service">Armel K. · 2 000 FCFA</div></div><span class="badge badge-vert">Terminé</span></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-client')"><div class="nav-icon">🏠</div><div class="nav-label">Accueil</div></div>
+    <div class="nav-item" onclick="show('reservation')"><div class="nav-icon">📅</div><div class="nav-label">Réserver</div></div>
+    <div class="nav-item active"><div class="nav-icon">📋</div><div class="nav-label">Historique</div></div>
+    <div class="nav-item" onclick="show('profil-client')"><div class="nav-icon">👤</div><div class="nav-label">Profil</div></div>
+  </div>
+</div>
+
+<!-- PROFIL CLIENT -->
+<div class="screen" id="profil-client">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-client')">← Retour</button>
+    <div class="header-title">Mon Profil</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div style="text-align:center;padding:24px 0 20px;">
+      <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--or-sombre),var(--or));border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 12px;">👤</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">Konan Fabrice</div>
+      <div style="font-size:13px;color:var(--gris-clair);margin-top:4px;">+237 699 000 111</div>
+    </div>
+    <div class="card">
+      <div class="switch-row"><div><div class="switch-label">Notifications RDV</div><div class="switch-sub">Rappel 1h avant</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">SMS de confirmation</div><div class="switch-sub">À chaque réservation</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row" style="border:none;"><div><div class="switch-label">Newsletter</div><div class="switch-sub">Offres et promotions</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="show('splash')">Se déconnecter</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-client')"><div class="nav-icon">🏠</div><div class="nav-label">Accueil</div></div>
+    <div class="nav-item" onclick="show('reservation')"><div class="nav-icon">📅</div><div class="nav-label">Réserver</div></div>
+    <div class="nav-item" onclick="show('historique-client')"><div class="nav-icon">📋</div><div class="nav-label">Historique</div></div>
+    <div class="nav-item active"><div class="nav-icon">👤</div><div class="nav-label">Profil</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LOGIN COIFFEUR
+═══════════════════════════════════ -->
+<div class="screen" id="login-coiffeur">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('splash')">← Retour</button>
+    <div class="header-title">Salon<span>App</span></div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="login-hero">
+    <div class="login-avatar">✂️</div>
+    <div class="login-title">Espace Coiffeur</div>
+    <div class="login-sub">Consultez votre planning du jour</div>
+  </div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Téléphone</div>
+      <input class="form-input" placeholder="+237 6XX XXX XXX" type="tel">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <button class="btn-primary" onclick="show('home-coiffeur')">Se connecter</button>
+    <div class="demo-label">Démo : coiffeur@salonapp.com / password</div>
+  </div>
+</div>
+
+<!-- HOME COIFFEUR -->
+<div class="screen" id="home-coiffeur">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <div style="width:80px"></div>
+    <div class="header-title">Mon <span>Planning</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="welcome-banner">
+      <div class="welcome-name"><span>Armel K.</span> ✂️</div>
+      <div class="welcome-sub">Mardi 27 Mai · 4 RDV aujourd'hui</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">RDV/jour</div></div>
+      <div class="stat-card"><div class="stat-value">2</div><div class="stat-label">Terminés</div></div>
+      <div class="stat-card"><div class="stat-value">12k</div><div class="stat-label">FCFA/jour</div></div>
+    </div>
+
+    <div class="section-title">Planning <span>d'aujourd'hui</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">08h</div><div class="rdv-am">Matin</div></div><div class="rdv-info"><div class="rdv-client">Kouamé Eric</div><div class="rdv-service">Coupe Simple · 2 000 F</div></div><span class="badge badge-vert">✓ Fait</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">09h</div><div class="rdv-am">Matin</div></div><div class="rdv-info"><div class="rdv-client">N'Guessan Paul</div><div class="rdv-service">Coupe + Barbe · 3 500 F</div></div><span class="badge badge-vert">✓ Fait</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">10h</div><div class="rdv-am">Matin</div></div><div class="rdv-info"><div class="rdv-client">Konan Fabrice</div><div class="rdv-service">Pack Premium · 5 000 F</div></div><span class="badge badge-or">En cours</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">14h</div><div class="rdv-am">Après-midi</div></div><div class="rdv-info"><div class="rdv-client">Traoré Ibra</div><div class="rdv-service">Coupe Simple · 2 000 F</div></div><span class="badge badge-bleu">À venir</span></div>
+
+    <div class="section-title">Mes <span>disponibilités</span></div>
+    <div class="card">
+      <div class="switch-row"><div><div class="switch-label">Lundi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Mardi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Mercredi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Jeudi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Vendredi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Samedi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row" style="border:none;"><div><div class="switch-label">Dimanche</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active"><div class="nav-icon">📅</div><div class="nav-label">Planning</div></div>
+    <div class="nav-item" onclick="show('stats-coiffeur')"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></div>
+    <div class="nav-item" onclick="show('splash')"><div class="nav-icon">🚪</div><div class="nav-label">Quitter</div></div>
+  </div>
+</div>
+
+<!-- STATS COIFFEUR -->
+<div class="screen" id="stats-coiffeur">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-coiffeur')">← Retour</button>
+    <div class="header-title">Mes <span>Stats</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="stats-row" style="grid-template-columns:1fr 1fr;margin-top:8px;">
+      <div class="stat-card"><div class="stat-value">127</div><div class="stat-label">RDV ce mois</div></div>
+      <div class="stat-card"><div class="stat-value">4.9</div><div class="stat-label">Note moyenne</div></div>
+    </div>
+    <div class="caisse-total" style="margin-top:8px;">
+      <div class="caisse-label">Revenus du mois</div>
+      <div class="caisse-montant">387 500 F</div>
+      <div class="caisse-date">Mai 2025 · 127 clients servis</div>
+    </div>
+    <div class="section-title">Répartition des <span>services</span></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:13px;">Coupe Simple</span><span style="color:var(--or);font-size:13px;font-weight:600;">52 fois</span></div>
+      <div class="progress-bar" style="margin-top:0;margin-bottom:12px;"><div class="progress-fill" style="width:41%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:13px;">Coupe + Barbe</span><span style="color:var(--or);font-size:13px;font-weight:600;">48 fois</span></div>
+      <div class="progress-bar" style="margin-top:0;margin-bottom:12px;"><div class="progress-fill" style="width:38%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-size:13px;">Pack Premium</span><span style="color:var(--or);font-size:13px;font-weight:600;">27 fois</span></div>
+      <div class="progress-bar" style="margin-top:0;"><div class="progress-fill" style="width:21%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LOGIN GÉRANT
+═══════════════════════════════════ -->
+<div class="screen" id="login-gerant">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('splash')">← Retour</button>
+    <div class="header-title">Salon<span>App</span></div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="login-hero">
+    <div class="login-avatar">🧾</div>
+    <div class="login-title">Espace Gérant</div>
+    <div class="login-sub">Gérez votre salon au quotidien</div>
+  </div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Email</div>
+      <input class="form-input" placeholder="gerant@salonapp.com" type="email">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <button class="btn-primary" onclick="show('home-gerant')">Se connecter</button>
+    <div class="demo-label">Démo : gerant@salonapp.com / password</div>
+  </div>
+</div>
+
+<!-- HOME GÉRANT -->
+<div class="screen" id="home-gerant">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <div style="width:80px"></div>
+    <div class="header-title">Tableau <span>de bord</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="caisse-total">
+      <div class="caisse-label">Recettes aujourd'hui</div>
+      <div class="caisse-montant">47 500 F</div>
+      <div class="caisse-date">Mardi 27 Mai · 16 clients</div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">16</div><div class="stat-label">Clients/jour</div></div>
+      <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Coiffeurs</div></div>
+      <div class="stat-card"><div class="stat-value">2</div><div class="stat-label">En attente</div></div>
+    </div>
+
+    <div class="section-title">RDV <span>en attente</span></div>
+    <div class="rdv-item">
+      <div class="rdv-time"><div class="rdv-heure">11h</div><div class="rdv-am">Auj.</div></div>
+      <div class="rdv-info"><div class="rdv-client">Yao Stéphane</div><div class="rdv-service">Coupe + Barbe · Aucun coiffeur assigné</div></div>
+      <span class="badge badge-rouge">À assigner</span>
+    </div>
+    <div class="rdv-item">
+      <div class="rdv-time"><div class="rdv-heure">15h</div><div class="rdv-am">Auj.</div></div>
+      <div class="rdv-info"><div class="rdv-client">Aka Junior</div><div class="rdv-service">Pack Premium · Aucun coiffeur assigné</div></div>
+      <span class="badge badge-rouge">À assigner</span>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="show('home-gerant')"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="show('coiffeurs-gerant')"><div class="nav-icon">✂️</div><div class="nav-label">Coiffeurs</div></div>
+    <div class="nav-item" onclick="show('rdv-gerant')"><div class="nav-icon">📅</div><div class="nav-label">RDV</div></div>
+    <div class="nav-item" onclick="show('caisse-gerant')"><div class="nav-icon">💰</div><div class="nav-label">Caisse</div></div>
+  </div>
+</div>
+
+<!-- COIFFEURS GÉRANT -->
+<div class="screen" id="coiffeurs-gerant">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-gerant')">← Retour</button>
+    <div class="header-title">Mes <span>Coiffeurs</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <button class="btn-primary" style="margin-bottom:20px;" onclick="show('ajouter-coiffeur')">+ Ajouter un coiffeur</button>
+    <div class="coiffeur-card"><div class="coiffeur-avatar">✂️</div><div class="coiffeur-info"><div class="coiffeur-name">Armel Kouamé</div><div class="coiffeur-spec">Dégradé · Afro · Barbe</div><div class="stars">★★★★★ (42 avis)</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar">✂️</div><div class="coiffeur-info"><div class="coiffeur-name">Brice Mengue</div><div class="coiffeur-spec">Twists · Dreadlocks</div><div class="stars">★★★★☆ (28 avis)</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar">✂️</div><div class="coiffeur-info"><div class="coiffeur-name">Serge Diallo</div><div class="coiffeur-spec">Coupe classique · Barbe</div><div class="stars">★★★☆☆ (15 avis)</div></div><span class="badge badge-gris">Congé</span></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-gerant')"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item active"><div class="nav-icon">✂️</div><div class="nav-label">Coiffeurs</div></div>
+    <div class="nav-item" onclick="show('rdv-gerant')"><div class="nav-icon">📅</div><div class="nav-label">RDV</div></div>
+    <div class="nav-item" onclick="show('caisse-gerant')"><div class="nav-icon">💰</div><div class="nav-label">Caisse</div></div>
+  </div>
+</div>
+
+<!-- AJOUTER COIFFEUR -->
+<div class="screen" id="ajouter-coiffeur">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('coiffeurs-gerant')">← Retour</button>
+    <div class="header-title">Nouveau coiffeur</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content" style="padding-top:16px;">
+    <div class="form-group" style="margin-bottom:14px;"><div class="form-label">Nom complet</div><input class="form-input" placeholder="Ex : Kouadio Michel"></div>
+    <div class="form-group" style="margin-bottom:14px;"><div class="form-label">Téléphone</div><input class="form-input" placeholder="+237 6XX XXX XXX"></div>
+    <div class="form-group" style="margin-bottom:14px;"><div class="form-label">Spécialités</div><input class="form-input" placeholder="Ex : Dégradé, Barbe, Afro"></div>
+    <div class="form-group" style="margin-bottom:24px;"><div class="form-label">Mot de passe temporaire</div><input class="form-input" placeholder="••••••••" type="password"></div>
+    <button class="btn-primary" onclick="show('coiffeurs-gerant')">Enregistrer le coiffeur</button>
+  </div>
+</div>
+
+<!-- RDV GÉRANT -->
+<div class="screen" id="rdv-gerant">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-gerant')">← Retour</button>
+    <div class="header-title">Tous les <span>RDV</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="section-title" style="margin-top:4px;">Aujourd'hui — <span>16 RDV</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">08h</div><div class="rdv-am">Auj.</div></div><div class="rdv-info"><div class="rdv-client">Kouamé Eric</div><div class="rdv-service">Coupe Simple · Armel K.</div></div><span class="badge badge-vert">Terminé</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">09h</div><div class="rdv-am">Auj.</div></div><div class="rdv-info"><div class="rdv-client">N'Guessan Paul</div><div class="rdv-service">Coupe + Barbe · Brice M.</div></div><span class="badge badge-vert">Terminé</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">10h</div><div class="rdv-am">Auj.</div></div><div class="rdv-info"><div class="rdv-client">Konan Fabrice</div><div class="rdv-service">Pack Premium · Armel K.</div></div><span class="badge badge-or">En cours</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">11h</div><div class="rdv-am">Auj.</div></div><div class="rdv-info"><div class="rdv-client">Yao Stéphane</div><div class="rdv-service">Coupe + Barbe · À assigner</div></div><span class="badge badge-rouge">En attente</span></div>
+    <div class="rdv-item"><div class="rdv-time"><div class="rdv-heure">14h</div><div class="rdv-am">Auj.</div></div><div class="rdv-info"><div class="rdv-client">Traoré Ibra</div><div class="rdv-service">Coupe Simple · Armel K.</div></div><span class="badge badge-bleu">À venir</span></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-gerant')"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="show('coiffeurs-gerant')"><div class="nav-icon">✂️</div><div class="nav-label">Coiffeurs</div></div>
+    <div class="nav-item active"><div class="nav-icon">📅</div><div class="nav-label">RDV</div></div>
+    <div class="nav-item" onclick="show('caisse-gerant')"><div class="nav-icon">💰</div><div class="nav-label">Caisse</div></div>
+  </div>
+</div>
+
+<!-- CAISSE GÉRANT -->
+<div class="screen" id="caisse-gerant">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-gerant')">← Retour</button>
+    <div class="header-title">Caisse</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="caisse-total">
+      <div class="caisse-label">Total du jour</div>
+      <div class="caisse-montant">47 500 F</div>
+      <div class="caisse-date">Mardi 27 Mai 2025 · 16 transactions</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">28k</div><div class="stat-label">Coupes</div></div>
+      <div class="stat-card"><div class="stat-value">14k</div><div class="stat-label">Barbe</div></div>
+      <div class="stat-card"><div class="stat-value">5.5k</div><div class="stat-label">Premium</div></div>
+    </div>
+    <div class="section-title">Dernières <span>transactions</span></div>
+    <div class="transaction"><div class="tx-left"><div class="tx-icon">✂️</div><div><div class="tx-desc">Coupe Simple</div><div class="tx-time">08h12 · Armel K.</div></div></div><div class="tx-amount">+2 000 F</div></div>
+    <div class="transaction"><div class="tx-left"><div class="tx-icon">🪒</div><div><div class="tx-desc">Coupe + Barbe</div><div class="tx-time">09h05 · Brice M.</div></div></div><div class="tx-amount">+3 500 F</div></div>
+    <div class="transaction"><div class="tx-left"><div class="tx-icon">👑</div><div><div class="tx-desc">Pack Premium</div><div class="tx-time">10h30 · Armel K.</div></div></div><div class="tx-amount">+5 000 F</div></div>
+    <div class="transaction"><div class="tx-left"><div class="tx-icon">✂️</div><div><div class="tx-desc">Coupe Simple</div><div class="tx-time">11h15 · Serge D.</div></div></div><div class="tx-amount">+2 000 F</div></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-gerant')"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="show('coiffeurs-gerant')"><div class="nav-icon">✂️</div><div class="nav-label">Coiffeurs</div></div>
+    <div class="nav-item" onclick="show('rdv-gerant')"><div class="nav-icon">📅</div><div class="nav-label">RDV</div></div>
+    <div class="nav-item active"><div class="nav-icon">💰</div><div class="nav-label">Caisse</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     LOGIN ADMIN
+═══════════════════════════════════ -->
+<div class="screen" id="login-admin">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('splash')">← Retour</button>
+    <div class="header-title">Salon<span>App</span></div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="login-hero">
+    <div class="login-avatar">🔐</div>
+    <div class="login-title">Administration</div>
+    <div class="login-sub">Accès restreint — Admin uniquement</div>
+  </div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Email Admin</div>
+      <input class="form-input" placeholder="admin@salonapp.com" type="email">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Mot de passe</div>
+      <input class="form-input" placeholder="••••••••" type="password">
+    </div>
+    <button class="btn-primary" onclick="show('home-admin')">Accéder au panel</button>
+    <div class="demo-label">Démo : admin@salonapp.com / password</div>
+  </div>
+</div>
+
+<!-- HOME ADMIN -->
+<div class="screen" id="home-admin">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <div style="width:80px"></div>
+    <div class="header-title">Panel <span>Admin</span></div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="alert alert-or"><span>🔐</span><span>Accès administrateur complet activé</span></div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">247</div><div class="stat-label">Clients</div></div>
+      <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Coiffeurs</div></div>
+      <div class="stat-card"><div class="stat-value">1.2M</div><div class="stat-label">FCFA/mois</div></div>
+    </div>
+
+    <div class="section-title">Gestion des <span>utilisateurs</span></div>
+    <div class="admin-table">
+      <div class="table-header">
+        <div class="th">Utilisateur</div>
+        <div class="th">Rôle</div>
+        <div class="th">Statut</div>
+      </div>
+      <div class="table-row"><div class="td">Armel K.<div class="td-sub">+237 699 111 222</div></div><div class="td"><span class="badge badge-or">Coiffeur</span></div><div class="td"><span class="badge badge-vert">Actif</span></div></div>
+      <div class="table-row"><div class="td">Brice M.<div class="td-sub">+237 699 333 444</div></div><div class="td"><span class="badge badge-or">Coiffeur</span></div><div class="td"><span class="badge badge-vert">Actif</span></div></div>
+      <div class="table-row"><div class="td">Gérard N.<div class="td-sub">+237 699 555 666</div></div><div class="td"><span class="badge badge-bleu">Gérant</span></div><div class="td"><span class="badge badge-vert">Actif</span></div></div>
+      <div class="table-row"><div class="td">Konan F.<div class="td-sub">+237 699 000 111</div></div><div class="td"><span class="badge badge-gris">Client</span></div><div class="td"><span class="badge badge-vert">Actif</span></div></div>
+    </div>
+
+    <div class="section-title">Revenus <span>par mois</span></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;">Janvier</span><span style="color:var(--or);font-size:13px;font-weight:600;">980 000 F</span></div>
+      <div class="progress-bar" style="margin-top:0;margin-bottom:12px;"><div class="progress-fill" style="width:82%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;">Février</span><span style="color:var(--or);font-size:13px;font-weight:600;">1 050 000 F</span></div>
+      <div class="progress-bar" style="margin-top:0;margin-bottom:12px;"><div class="progress-fill" style="width:88%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;">Mars</span><span style="color:var(--or);font-size:13px;font-weight:600;">1 180 000 F</span></div>
+      <div class="progress-bar" style="margin-top:0;margin-bottom:12px;"><div class="progress-fill" style="width:98%"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;">Avril</span><span style="color:var(--or);font-size:13px;font-weight:600;">1 120 000 F</span></div>
+      <div class="progress-bar" style="margin-top:0;"><div class="progress-fill" style="width:93%"></div></div>
+    </div>
+
+    <div class="section-title">Configuration <span>de l'app</span></div>
+    <div class="card">
+      <div class="switch-row"><div><div class="switch-label">Mode maintenance</div><div class="switch-sub">Fermer temporairement l'app</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row"><div><div class="switch-label">Inscriptions ouvertes</div><div class="switch-sub">Autoriser nouveaux clients</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="switch-row" style="border:none;"><div><div class="switch-label">Notifications push</div><div class="switch-sub">Alertes temps réel</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+
+    <button class="btn-secondary" style="width:100%;margin-top:8px;margin-bottom:24px;" onclick="show('users-admin')">Voir tous les utilisateurs</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="show('home-admin')"><div class="nav-icon">🏠</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="show('users-admin')"><div class="nav-icon">👥</div><div class="nav-label">Utilisateurs</div></div>
+    <div class="nav-item" onclick="show('splash')"><div class="nav-icon">🚪</div><div class="nav-label">Quitter</div></div>
+  </div>
+</div>
+
+<!-- USERS ADMIN -->
+<div class="screen" id="users-admin">
+  <div class="status-bar"><span>9:41</span><div class="status-icons">▲ ● ■</div></div>
+  <div class="header">
+    <button class="back-btn" onclick="show('home-admin')">← Retour</button>
+    <div class="header-title">Utilisateurs</div>
+    <button class="logout-btn" onclick="show('splash')">Quitter</button>
+  </div>
+  <div class="scroll-content">
+    <div class="stats-row" style="margin-top:8px;">
+      <div class="stat-card"><div class="stat-value">247</div><div class="stat-label">Clients</div></div>
+      <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Coiffeurs</div></div>
+      <div class="stat-card"><div class="stat-value">1</div><div class="stat-label">Gérant</div></div>
+    </div>
+    <div class="section-title" style="margin-top:8px;">Tous les <span>comptes</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar" style="font-size:20px;">✂️</div><div class="coiffeur-info"><div class="coiffeur-name">Armel Kouamé</div><div class="coiffeur-spec">Coiffeur · armel@salonapp.com</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar" style="font-size:20px;">✂️</div><div class="coiffeur-info"><div class="coiffeur-name">Brice Mengue</div><div class="coiffeur-spec">Coiffeur · brice@salonapp.com</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar" style="font-size:20px;">🧾</div><div class="coiffeur-info"><div class="coiffeur-name">Gérard Nkoum</div><div class="coiffeur-spec">Gérant · gerant@salonapp.com</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar" style="font-size:20px;">👤</div><div class="coiffeur-info"><div class="coiffeur-name">Konan Fabrice</div><div class="coiffeur-spec">Client · +237 699 000 111</div></div><span class="badge badge-vert">Actif</span></div>
+    <div class="coiffeur-card"><div class="coiffeur-avatar" style="font-size:20px;">👤</div><div class="coiffeur-info"><div class="coiffeur-name">Traoré Ibra</div><div class="coiffeur-spec">Client · +237 699 222 333</div></div><span class="badge badge-gris">Inactif</span></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="show('home-admin')"><div class="nav-icon">🏠</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item active"><div class="nav-icon">👥</div><div class="nav-label">Utilisateurs</div></div>
+    <div class="nav-item" onclick="show('splash')"><div class="nav-icon">🚪</div><div class="nav-label">Quitter</div></div>
+  </div>
+</div>
+
+</div><!-- /phone -->
+</div><!-- /app-wrapper -->
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('active');
+      target.scrollTop = 0;
+    }
+  }
+</script>
+</body>
+</html>
