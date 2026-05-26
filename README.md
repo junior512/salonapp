@@ -1,66 +1,142 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💈 SalonApp — Application de Gestion de Salon de Coiffure pour Hommes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Application mobile & web full-stack de gestion complète d'un salon de coiffure masculin.  
+> Développée avec **Flutter · Laravel 11 · MySQL · REST API**
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📱 Aperçu du projet
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+SalonApp est une solution digitale complète destinée aux salons de coiffure pour hommes.  
+Elle permet la gestion des réservations, des coiffeurs, de la caisse et de l'administration — le tout depuis une interface mobile intuitive.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🎯 Fonctionnalités principales
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 👤 Client
+- Inscription et connexion sécurisée
+- Réservation en ligne avec choix du créneau horaire et du coiffeur
+- Suivi de l'état de ses rendez-vous
+- Historique des visites
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### ✂️ Coiffeur
+- Consultation de son planning du jour
+- Gestion de ses disponibilités
+- Suivi de ses rendez-vous assignés
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🧾 Gérant
+- Tableau de bord de l'activité du salon
+- Gestion des coiffeurs (ajout, modification, désactivation)
+- Suivi des rendez-vous de tous les clients
+- Gestion de la caisse et des paiements
 
-## Laravel Sponsors
+### 🔐 Administrateur
+- Accès complet à toutes les fonctionnalités
+- Gestion des comptes utilisateurs et des rôles
+- Configuration générale de l'application
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Stack technique
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Couche | Technologie |
+|---|---|
+| Mobile | Flutter (Dart) |
+| Backend | Laravel 11 (PHP) |
+| Base de données | MySQL |
+| Communication | REST API (JSON) |
+| Authentification | Laravel Sanctum |
+| Gestion de versions | Git & GitHub |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🗂️ Architecture du projet
 
-## Code of Conduct
+```
+salonapp/
+├── mobile/          # Application Flutter
+│   ├── lib/
+│   │   ├── screens/ # Écrans par rôle
+│   │   ├── models/  # Modèles de données
+│   │   └── services/# Appels API
+├── backend/         # API Laravel 11
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   ├── Models/
+│   │   └── Middleware/
+│   ├── routes/api.php
+│   └── database/migrations/
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🚀 Installation & lancement
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Prérequis
+- Flutter SDK ≥ 3.x
+- PHP ≥ 8.2
+- Composer
+- MySQL
+- Git
 
-## License
+### Backend (Laravel)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git clone https://github.com/TON_USERNAME/salonapp.git
+cd salonapp/backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+### Mobile (Flutter)
+
+```bash
+cd salonapp/mobile
+flutter pub get
+flutter run
+```
+
+---
+
+## 🔑 Comptes de démonstration
+
+| Rôle | Email | Mot de passe |
+|---|---|---|
+| Admin | admin@salonapp.com | password |
+| Gérant | gerant@salonapp.com | password |
+| Coiffeur | coiffeur@salonapp.com | password |
+| Client | client@salonapp.com | password |
+
+---
+
+## 📋 Statut du projet
+
+| Module | Statut |
+|---|---|
+| Authentification & rôles | ✅ Terminé |
+| Gestion des coiffeurs | ✅ Terminé |
+| Réservations (RendezVous) | 🔄 En cours |
+| Caisse & paiements | 🔄 En cours |
+| Intégration Mobile Money | 🔜 Prévu (Wave, Orange Money, MTN MoMo) |
+| Déploiement production | 🔜 Prévu |
+
+---
+
+## 👨‍💻 Développeur
+
+**Non Joseph Junior**  
+Développeur Full-Stack Flutter & Laravel  
+📍 Douala, Cameroun  
+📧 jnon200@yahoo.com  
+📱 +237 699 831 392
+
+---
+
+## 📄 Licence
+
+Ce projet est développé à des fins professionnelles et de démonstration.  
+© 2025 Non Joseph Junior — Tous droits réservés.
